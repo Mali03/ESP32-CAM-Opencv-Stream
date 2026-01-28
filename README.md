@@ -1,7 +1,15 @@
 # ESP32-CAM Opencv Stream Capture
 
+![ESP32-CAM](https://img.shields.io/badge/ESP32-blue?logo=espressif)
+![OpenCV](https://img.shields.io/badge/OpenCV-Python-orange?logo=opencv)
+![IoT](https://img.shields.io/badge/IoT-green?logo=iot)
+
 This project demonstrates how to use an **ESP32-CAM (AI Thinker)** as a lightweight HTTP camera server and access single-frame JPEG images from a Python script on a computer.
 It is designed for **computer vision** and **image processing** applications where processing is done on the PC, not on the **ESP32**.
+
+<p float="left">
+  <img src="Example.gif" width="400"/>
+</p>
 
 ## Features
 - ESP32-CAM HTTP server
