@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include "esp_camera.h"
+#include "esp_wifi.h"
 #include <WiFi.h>
 #include "esp_http_server.h"
 #include "esp_timer.h"
@@ -59,8 +60,8 @@ static camera_config_t camera_config = {
     .pixel_format = PIXFORMAT_JPEG,
     .frame_size = FRAMESIZE_QVGA, // 320x240 QQVGA -> 160x120
 
-    .jpeg_quality = 22, // 0-63 lower number means higher quality
-    .fb_count = 2,      // if more than one, i2s runs in continuous mode. Use only with JPEG
+    .jpeg_quality = 28, // 0-63 lower number means higher quality
+    .fb_count = 1,      // if more than one, i2s runs in continuous mode. Use only with JPEG
     .fb_location = CAMERA_FB_IN_PSRAM,
     .grab_mode = CAMERA_GRAB_LATEST,
 };
@@ -91,7 +92,7 @@ static esp_err_t index_handler(httpd_req_t *req)
   const char *html =
       "<!DOCTYPE html><html><head><meta charset='utf-8'>"
       "<meta name='viewport' content='width=device-width, initial-scale=1'>"
-      "<title>ESP32-CAM Object Detection</title>"
+      "<title>ESP32-CAM Camera Stream</title>"
       "<style>body{margin:0;padding:20px;background:#1a1a1a;color:#fff;font-family:Arial,sans-serif;text-align:center}"
       "h1{color:#4CAF50}img{max-width:100%;height:auto;border:3px solid #4CAF50;border-radius:8px}</style>"
       "</head><body>"
@@ -109,7 +110,7 @@ static esp_err_t stream_handler(httpd_req_t *req)
   esp_err_t res = ESP_OK;
   size_t _jpg_buf_len = 0;
   uint8_t *_jpg_buf = NULL;
-  char *part_buf[64];
+  static char *part_buf[128];
 
   res = httpd_resp_set_type(req, _STREAM_CONTENT_TYPE);
   if (res != ESP_OK)
@@ -172,6 +173,8 @@ static esp_err_t stream_handler(httpd_req_t *req)
     {
       break;
     }
+
+    vTaskDelay(1);
   }
   return res;
 }
@@ -181,6 +184,7 @@ void startCameraServer()
   httpd_handle_t server = NULL;
   httpd_config_t config = HTTPD_DEFAULT_CONFIG();
   config.server_port = 80;
+  config.stack_size = 8192;
 
   httpd_uri_t index_uri = {
       .uri = "/",
@@ -194,17 +198,10 @@ void startCameraServer()
       .handler = stream_handler,
       .user_ctx = NULL};
 
-  httpd_uri_t capture_uri = {
-      .uri = "/capture",
-      .method = HTTP_GET,
-      .handler = capture_handler,
-      .user_ctx = NULL};
-
   if (httpd_start(&server, &config) == ESP_OK)
   {
     httpd_register_uri_handler(server, &index_uri);
     httpd_register_uri_handler(server, &stream_uri);
-    httpd_register_uri_handler(server, &capture_uri);
   }
 }
 
@@ -224,8 +221,7 @@ void setup()
   Serial.begin(115200);
   Serial.setDebugOutput(true);
 
-  while (!Serial)
-    ;
+  while (!Serial);
 
   if (ei_camera_init() == false)
   {
@@ -236,8 +232,17 @@ void setup()
     Serial.println("Camera initialized\r\n");
   }
 
+  sensor_t *s = esp_camera_sensor_get();
+  s->set_framesize(s, FRAMESIZE_QVGA);
+  s->set_quality(s, 28);
+  s->set_brightness(s, 0);
+  s->set_contrast(s, 0);
+  s->set_saturation(s, 0);
+  s->set_gainceiling(s, GAINCEILING_8X);
+
   WiFi.begin(ssid, password);
   WiFi.setSleep(false);
+  esp_wifi_set_ps(WIFI_PS_NONE);
 
   Serial.print("WiFi connecting");
   while (WiFi.status() != WL_CONNECTED)
