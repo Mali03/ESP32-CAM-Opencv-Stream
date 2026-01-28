@@ -1,11 +1,12 @@
-# ESP32-CAM Opencv Stream Capture
+# ESP32-CAM OpenCV Stream Capture
 
 ![ESP32-CAM](https://img.shields.io/badge/ESP32-blue?logo=espressif)
 ![OpenCV](https://img.shields.io/badge/OpenCV-Python-orange?logo=opencv)
 ![IoT](https://img.shields.io/badge/IoT-green?logo=iot)
 
-This project demonstrates how to use an **ESP32-CAM (AI Thinker)** as a lightweight HTTP camera server and access single-frame JPEG images from a Python script on a computer.
-It is designed for **computer vision** and **image processing** applications where processing is done on the PC, not on the **ESP32**.
+This project demonstrates how to use an **ESP32-CAM (AI Thinker)** as a lightweight HTTP camera server and access single-frame JPEG images from a Python script.
+
+It is designed for **computer vision** and **image processing** applications where all processing is performed on the PC, not on the **ESP32**.
 
 <p float="left">
   <img src="Example.gif" width="400"/>
@@ -13,7 +14,7 @@ It is designed for **computer vision** and **image processing** applications whe
 
 ## Features
 - ESP32-CAM HTTP server
-- `/capture` endpoint for single JPEG frame
+- `/capture` endpoint for a single JPEG frame
 - Compatible with **OpenCV (Python)**
 - Ideal for:
   - OpenCV image processing
@@ -31,7 +32,7 @@ It is designed for **computer vision** and **image processing** applications whe
    - Decodes the image using OpenCV
    - Processes frames in real time
 
-This approach avoids ESP32 performance limits and lets the computer do all heavy processing.
+This approach avoids ESP32 performance limits and lets the PC handle all heavy processing.
 
 ## ESP32-CAM Endpoints
 | Endpoint   | Method | Description |
@@ -74,7 +75,7 @@ framework = arduino
 monitor_speed = 115200
 ```
 4. Connect the ESP32-CAM to the FTDI programmer (see [Programming ESP32-CAM](#programming-esp32-cam))
-5. Get the code from [src/main.cpp](https://github.com/Mali03/ESP32-CAM-Opencv-Stream/blob/main/src/main.cpp) and set your WiFi credentials:
+5. Get the code from [src/main.cpp](https://github.com/Mali03/ESP32-CAM-OpenCV-Stream/blob/main/src/main.cpp) and set your WiFi credentials:
 ```cpp
 const char *ssid = "******";
 const char *password = "******";
@@ -99,17 +100,17 @@ pip install opencv-python numpy
 src/StreamCapture.py
 ```
 3. Update the ESP32-CAM IP address in the script:
-```
+```py
 url = "http://192.168.1.131/capture"
 ```
 4. Run the script:
 ```
 python StreamCapture.py
 ```
-5. A window will open showing live frames from the ESP32-CAM. Press q to exit.
+5. A window will open showing live frames from the ESP32-CAM. Press 'q' to exit.
 
 ## License
-This project is licensed under the **MIT License** - see the [LICENSE](https://github.com/Mali03/ESP32-CAM-Opencv-Stream/blob/main/LICENSE) file for details.
+This project is licensed under the **MIT License** - see the [LICENSE](https://github.com/Mali03/ESP32-CAM-OpenCV-Stream/blob/main/LICENSE) file for details.
 
 ## Need Help
 If you need any help contact me on [LinkedIn](https://www.linkedin.com/in/mali03/).
