@@ -12,6 +12,16 @@ It is designed for **computer vision** and **image processing** applications whe
   <img src="Example.gif" width="400"/>
 </p>
 
+## Contents
+- [Features](#features)
+- [How It Works](#how-it-works)
+- [ESP32-CAM Endpoints](#esp32-cam-endpoints)
+- [Hardware Requirements](#hardware-requirements)
+- [Libraries Used](#libraries-used)
+- [Installation](#installation)
+- [License](#license)
+- [Need help](#need-help)
+
 ## Features
 - ESP32-CAM HTTP server
 - `/capture` endpoint for a single JPEG frame
