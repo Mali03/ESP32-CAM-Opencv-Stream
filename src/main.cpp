@@ -198,10 +198,17 @@ void startCameraServer()
       .handler = stream_handler,
       .user_ctx = NULL};
 
+  httpd_uri_t capture_uri = {
+      .uri = "/capture",
+      .method = HTTP_GET,
+      .handler = capture_handler,
+      .user_ctx = NULL};
+
   if (httpd_start(&server, &config) == ESP_OK)
   {
     httpd_register_uri_handler(server, &index_uri);
     httpd_register_uri_handler(server, &stream_uri);
+    httpd_register_uri_handler(server, &capture_uri);
   }
 }
 
